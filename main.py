@@ -28,10 +28,6 @@ def load_file():
     woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
     # messagebox.showinfo("Wörterbuch geladen", str(len(wortliste)) + " Wörter wurden geladen.")
 
-def laden_btt_click():
-    load_file()
-    laden_btt.config(state="disabled")
-
 start_wort = 'adieu'
 passende_woerter = [start_wort]
 
@@ -257,9 +253,6 @@ def reset_form():
     gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
     add_all_traces()
 
-# such_btt = ttk.Button(mainframe, text="Suchen", command=suchen).grid(column=2, row=7, sticky=E)
-laden_btt = ttk.Button(mainframe, text="Laden", command=laden_btt_click)
-laden_btt.grid(column=0, row=7, sticky=W)
 erneut_btt = ttk.Button(mainframe, text="Erneut", command=reset_form)
 erneut_btt.grid(column=1, row=7, sticky=E)
 
@@ -272,5 +265,7 @@ for child in rf_frame.winfo_children():
     child.grid_configure(padx=1,pady=5)
 
 root.bind("<Return>", suchen)
+
+load_file()
 
 root.mainloop()
