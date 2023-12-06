@@ -1,5 +1,4 @@
 import json
-import re
 from tkinter import *
 from tkinter import ttk, messagebox
 
@@ -11,214 +10,267 @@ mainframe.grid(column=0, row=2, sticky=(N, W, E, S))
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
-richtigframe = ttk.Frame(mainframe)
-richtigframe.grid(column=1, row=0, rowspan=2, columnspan=2, sticky=(N, W, E, S))
+rf_frame = ttk.Frame(mainframe)
+rf_frame.grid(column=1, row=0, rowspan=2, columnspan=2, sticky=(N, W, E, S))
 
-# loader = ttk.Progressbar(mainframe, mode='indeterminate')
-# loader.grid(column=0, row=6)
+json_pfad = 'dict.json'
 
-# Specify the path to your JSON file
-json_file_path = 'german-words.json'
+wortliste = []
 
-
-# Function to filter data based on the length of the 'word' key
-def filter_data(word_value):
-    # Implement your filtering logic here
-    # For example, filter items where the length of 'word' is less than or equal to 5 and does not contain umlaute
-    return len(str(word_value)) <= 5 and not re.search(r'[äöüßÄÖÜéèêùùûòóôáàâ]', word_value)
-
-# Function to query the filtered data with a regular expression
-def query_data(filtered_data, regex, needed_letters):
-    # Return a subarray with matching strings
-    regex_search = [item for item in filtered_data if re.search(regex, str(item))]
-    if len(needed_letters) == 0:
-        return regex_search
-    else:
-        return [item for item in regex_search if
-                all(letter in item for letter in needed_letters)]
-
-# Open the JSON file and read it line by line
-filtered_data = []
 def load_file():
     global laden_btt
     global such_btt
-    global filtered_data
-    with open(json_file_path, 'r', encoding='utf-8') as file:
+    global wortliste
+    with open(json_pfad, 'r', encoding='utf-8') as file:
         # Initialize an empty list to store filtered data
-        filtered_data = []
+        wortliste = json.load(file)
+    woerter_anzahl = len(wortliste)
+    woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
+    # messagebox.showinfo("Wörterbuch geladen", str(len(wortliste)) + " Wörter wurden geladen.")
 
-        for line in file:
-            # Load JSON from the current line
-            data = json.loads(line)
-
-            # Get the value of the 'word' key
-            word_value = str(data.get('word', None)).lower()
-
-            # Check if the 'word' value meets the filtering criteria
-            if word_value is not None and filter_data(word_value):
-                # Add the 'word' value to the filtered data list
-                filtered_data.append(word_value)
-        
-        filtered_data = list(set(filtered_data)) # Eliminate duplicates
-        # Now, 'filtered_data' contains the filtered 'word' values from the entire JSON file
-    messagebox.showinfo("Wörterbuch geladen", str(len(filtered_data)) + " Wörter wurden geladen.")
+def laden_btt_click():
+    load_file()
+    laden_btt.config(state="disabled")
 
 start_wort = 'adieu'
+passende_woerter = [start_wort]
+
+r_lbl = ttk.Label(mainframe, text='Richtige Stelle:')
+r_lbl.grid(column=0, row=0, sticky=E)
+r1_var = StringVar()
+r2_var = StringVar()
+r3_var = StringVar()
+r4_var = StringVar()
+r5_var = StringVar()
+r1_entry = ttk.Entry(rf_frame, textvariable=r1_var, width=3)
+r1_entry.grid(column=0, row=0, sticky=W)
+r2_entry = ttk.Entry(rf_frame, textvariable=r2_var, width=3)
+r2_entry.grid(column=1, row=0, sticky=W)
+r3_entry = ttk.Entry(rf_frame, textvariable=r3_var, width=3)
+r3_entry.grid(column=2, row=0, sticky=W)
+r4_entry = ttk.Entry(rf_frame, textvariable=r4_var, width=3)
+r4_entry.grid(column=3, row=0, sticky=W)
+r5_entry = ttk.Entry(rf_frame, textvariable=r5_var, width=3)
+r5_entry.grid(column=4, row=0, sticky=W)
+
+f_lbl = ttk.Label(mainframe, text='Falsche Stelle:')
+f_lbl.grid(column=0, row=1, sticky=E)
+f1_var = StringVar()
+f2_var = StringVar()
+f3_var = StringVar()
+f4_var = StringVar()
+f5_var = StringVar()
+f1_entry = ttk.Entry(rf_frame, textvariable=f1_var, width=3)
+f1_entry.grid(column=0, row=1, sticky=W)
+f2_entry = ttk.Entry(rf_frame, textvariable=f2_var, width=3)
+f2_entry.grid(column=1, row=1, sticky=W)
+f3_entry = ttk.Entry(rf_frame, textvariable=f3_var, width=3)
+f3_entry.grid(column=2, row=1, sticky=W)
+f4_entry = ttk.Entry(rf_frame, textvariable=f4_var, width=3)
+f4_entry.grid(column=3, row=1, sticky=W)
+f5_entry = ttk.Entry(rf_frame, textvariable=f5_var, width=3)
+f5_entry.grid(column=4, row=1, sticky=W)
+
+nt_lbl = ttk.Label(mainframe, text='Ausgeschlossen:').grid(column=0, row=2, sticky=E)
+nt_var = StringVar()
+nt_entry = ttk.Entry(mainframe, textvariable=nt_var)
+nt_entry.grid(column=1, row=2, sticky=W)
+
+vorschlaege_lbl = ttk.Label(mainframe, text='Vorschläge:').grid(column=0, row=5, sticky=NE)
+vorschlaege_var = StringVar()
+vorschlaege_var.set([start_wort])
+vorschlaege_lstbx = Listbox(mainframe, height=10, listvariable=vorschlaege_var)
+vorschlaege_lstbx.grid(column=1, row=5, sticky=W)
+
+gefunden_var = StringVar()
+gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
+gefunden_lbl = ttk.Label(mainframe, textvariable=gefunden_var)
+gefunden_lbl.grid(column=1, row=6, sticky=NW)
+
+woerter_anzahl = 0
+woerter_anzahl_var = StringVar()
+woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
+anzahl_lbl = ttk.Label(mainframe, textvariable=woerter_anzahl_var)
+anzahl_lbl.grid(column=0, row=8, sticky=W)
+
 iterationen = 0
-
-label_pos = ttk.Label(mainframe, text='Richtige Stelle:').grid(column=0, row=0, sticky=E)
-richtig_1_var = StringVar()
-richtig_2_var = StringVar()
-richtig_3_var = StringVar()
-richtig_4_var = StringVar()
-richtig_5_var = StringVar()
-richtig_1 = ttk.Entry(richtigframe, textvariable=richtig_1_var, width=3).grid(column=0, row=0, sticky=W)
-richtig_2 = ttk.Entry(richtigframe, textvariable=richtig_2_var, width=3).grid(column=1, row=0, sticky=W)
-richtig_3 = ttk.Entry(richtigframe, textvariable=richtig_3_var, width=3).grid(column=2, row=0, sticky=W)
-richtig_4 = ttk.Entry(richtigframe, textvariable=richtig_4_var, width=3).grid(column=3, row=0, sticky=W)
-richtig_5 = ttk.Entry(richtigframe, textvariable=richtig_5_var, width=3).grid(column=4, row=0, sticky=W)
-label_pos_falsch = ttk.Label(mainframe, text='Falsche Stelle:').grid(column=0, row=1, sticky=E)
-falsch_1_var = StringVar()
-falsch_2_var = StringVar()
-falsch_3_var = StringVar()
-falsch_4_var = StringVar()
-falsch_5_var = StringVar()
-falsch_1 = ttk.Entry(richtigframe, textvariable=falsch_1_var, width=3).grid(column=0, row=1, sticky=W)
-falsch_2 = ttk.Entry(richtigframe, textvariable=falsch_2_var, width=3).grid(column=1, row=1, sticky=W)
-falsch_3 = ttk.Entry(richtigframe, textvariable=falsch_3_var, width=3).grid(column=2, row=1, sticky=W)
-falsch_4 = ttk.Entry(richtigframe, textvariable=falsch_4_var, width=3).grid(column=3, row=1, sticky=W)
-falsch_5 = ttk.Entry(richtigframe, textvariable=falsch_5_var, width=3).grid(column=4, row=1, sticky=W)
+iterationen_var = StringVar()
+iterationen_var.set('Suchvorgänge: ' + str(iterationen))
+iterationen_lbl = ttk.Label(mainframe, textvariable=iterationen_var)
+iterationen_lbl.grid(column=1, row=8, sticky=E)
 
 
-neue_woerter = StringVar()
-label_ausg = ttk.Label(mainframe, text='Ausgeschlossen:').grid(column=0, row=2, sticky=E)
-ausgeschlossen = StringVar()
-ausgeschlossen_ent = ttk.Entry(mainframe, textvariable=ausgeschlossen).grid(column=1, row=2, sticky=W)
-label_regex = ttk.Label(mainframe, text='Regex:').grid(column=0, row=4, sticky=E)
-regex_var = StringVar()
-regex_ent = ttk.Entry(mainframe, textvariable=regex_var, state=DISABLED).grid(column=1, row=4, sticky=W)
-label_needed = ttk.Label(mainframe, text='Beinhaltet:').grid(column=0, row=3, sticky=E)
-needed_var = StringVar()
-needed_ent = ttk.Entry(mainframe, textvariable=needed_var, state=DISABLED).grid(column=1, row=3, sticky=W)
-label_vorschlaege = ttk.Label(mainframe, text='Vorschläge:').grid(column=0, row=5, sticky=NE)
-listb = Listbox(mainframe, height=10, listvariable=neue_woerter).grid(column=1, row=5, sticky=W)
-# lbl_buch = ttk.Label(mainframe, text='Wörter geladen: 0').grid(column=2, row=5, sticky=W)
+def wort_wert(wort):
+    # Berechne gewichteten Wert anhand Buchstaben in einem Wort
+    vokale = ['a', 'e', 'i', 'o', 'u']
+    vokal_gewicht = 2
+    buchstaben_stat = { # Prozentualer anteil
+        'e': 0.1740,
+        'n': 0.978,
+        'i': 0.755,
+        's': 0.727,
+        'r': 0.700,
+        'a': 0.651,
+        't': 0.615,
+        'd': 0.508,
+        'h': 0.476,
+        'u': 0.435,
+        'l': 0.344,
+        'c': 0.306,
+        'g': 0.301,
+        'm': 0.253,
+        'o': 0.251,
+        'b': 0.189,
+        'w': 0.189,
+        'f': 0.166,
+        'k': 0.121,
+        'z': 0.113,
+        'p': 0.079,
+        'v': 0.067,
+        # 'ß': 0.031,
+        'j': 0.027,
+        'y': 0.004,
+        'x': 0.003,
+        'q': 0.002,
+    }
 
-def calculate(*args):
+    wert = 0.00
+    for buchstabe in wort:
+        gewichtung = 1
+        if buchstabe in vokale:
+            gewichtung = vokal_gewicht
+        wert += (buchstaben_stat[buchstabe] * gewichtung)
+    return wert
+
+
+def filtern(woerter):
+    gefiltert = woerter
+
+    # Textfelder auslesen
+    ## Buchstaben an der richtigen Stelle
+    r1 = r1_var.get()
+    r2 = r2_var.get()
+    r3 = r3_var.get()
+    r4 = r4_var.get()
+    r5 = r5_var.get()
+    ## Buchstaben an der falschen Stelle
+    f1 = f1_var.get()
+    f2 = f2_var.get()
+    f3 = f3_var.get()
+    f4 = f4_var.get()
+    f5 = f5_var.get()
+    ## Buchstaben ausgeschlossen
+    nt = nt_var.get()
+
+    # Ausgeschlossene Buchstaben filtern
+    if len(nt) > 0:
+        gefiltert = [wort for wort in gefiltert if not any(buchstabe in nt for buchstabe in wort)]
+    # Richtig positionierte Buchstaben filtern
+    if len(r1) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[0] == r1.lower()]
+    if len(r2) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[1] == r2.lower()]
+    if len(r3) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[2] == r3.lower()]
+    if len(r4) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[3] == r4.lower()]
+    if len(r5) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[4] == r5.lower()]
+    # Falsch positionierte Buchstaben filtern
+    if len(f1) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[0] not in f1.lower()]
+    if len(f2) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[1] not in f2.lower()]
+    if len(f3) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[2] not in f3.lower()]
+    if len(f4) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[3] not in f4.lower()]
+    if len(f5) > 0:
+        gefiltert = [wort for wort in gefiltert if wort[4] not in f5.lower()]
+    
+    gefiltert.sort(key=wort_wert, reverse=True)
+    return gefiltert
+
+def suchen(*args):
     global iterationen
     global start_wort
-    global needed_letters
-    global filtered_data
-    if iterationen == 0 and len(ausgeschlossen.get()) == 0 and len(richtig_1_var.get()) == 0 and len(richtig_2_var.get()) == 0 \
-        and len(richtig_3_var.get()) == 0  and len(richtig_4_var.get()) == 0  and len(richtig_5_var.get()) == 0 \
-        and len(falsch_1_var.get()) == 0 and len(falsch_2_var.get()) == 0 \
-        and len(falsch_3_var.get()) == 0  and len(falsch_4_var.get()) == 0  and len(falsch_5_var.get()) == 0:
-        neue_woerter.set(start_wort)
-        regex_var.set('')
+    global wortliste
+    global passende_woerter
+    if iterationen == 0 and len(nt_var.get()) == 0 and len(r1_var.get()) == 0 and len(r2_var.get()) == 0 \
+        and len(r3_var.get()) == 0  and len(r4_var.get()) == 0  and len(r5_var.get()) == 0 \
+        and len(f1_var.get()) == 0 and len(f2_var.get()) == 0 \
+        and len(f3_var.get()) == 0  and len(f4_var.get()) == 0  and len(f5_var.get()) == 0:
+        vorschlaege_var.set(start_wort)
     else:
-        needed_letters = []
-        if len(falsch_1_var.get()) != 0:
-            needed_letters.append(falsch_1_var.get())
-        if len(falsch_2_var.get()) != 0:
-            needed_letters.append(falsch_2_var.get())
-        if len(falsch_3_var.get()) != 0:
-            needed_letters.append(falsch_3_var.get())
-        if len(falsch_4_var.get()) != 0:
-            needed_letters.append(falsch_4_var.get())
-        if len(falsch_5_var.get()) != 0:
-            needed_letters.append(falsch_5_var.get())
-        
-        r1 = ''
-        r2 = ''
-        r3 = ''
-        r4 = ''
-        r5 = ''
-        a1 = ''
-        a2 = ''
-        a3 = ''
-        a4 = ''
-        a5 = ''
-        if len(richtig_1_var.get()) != 0:
-            r1 = re.escape(richtig_1_var.get())
-        else:
-            if len(ausgeschlossen.get()) != 0 or len(falsch_1_var.get()) != 0:
-                a1 = r'[^' + re.escape(ausgeschlossen.get()) + re.escape(falsch_1_var.get()) + r']'
-            else:
-                a1 = '\w'
-        if len(richtig_2_var.get()) != 0:
-            r2 = re.escape(richtig_2_var.get())
-        else:
-            if len(ausgeschlossen.get()) != 0 or len(falsch_2_var.get()) != 0:
-                a2 = r'[^' + re.escape(ausgeschlossen.get()) + re.escape(falsch_2_var.get()) + r']'
-            else:
-                a2 = '\w'
-        if len(richtig_3_var.get()) != 0:
-            r3 = re.escape(richtig_3_var.get())
-        else:
-            if len(ausgeschlossen.get()) != 0 or len(falsch_3_var.get()) != 0:
-                a3 = r'[^' + re.escape(ausgeschlossen.get()) + re.escape(falsch_3_var.get()) + r']'
-            else:
-                a3 = '\w'
-        if len(richtig_4_var.get()) != 0:
-            r4 = re.escape(richtig_4_var.get())
-        else:
-            if len(ausgeschlossen.get()) != 0 or len(falsch_4_var.get()) != 0:
-                a4 = r'[^' + re.escape(ausgeschlossen.get()) + re.escape(falsch_4_var.get()) + r']'
-            else:
-                a4 = '\w'
-        if len(richtig_5_var.get()) != 0:
-            r5 = re.escape(richtig_5_var.get())
-        else:
-            if len(ausgeschlossen.get()) != 0 or len(falsch_5_var.get()) != 0:
-                a5 = r'[^' + re.escape(ausgeschlossen.get()) + re.escape(falsch_5_var.get()) + r']'
-            else:
-                a5 = '\w'
-        regex_pattern = r'^' + r1 + a1 + r2 + a2 + r3 + a3 + r4 + a4 + r5 + a5 + r'$'
-        regex_var.set(str(regex_pattern))
-        needed_var.set(','.join(needed_letters))
-        matched_strings = query_data(filtered_data, regex_pattern, needed_letters)
-        neue_woerter.set(matched_strings)
+        passende_woerter = filtern(wortliste)
+        vorschlaege_var.set(passende_woerter)
+    iterationen += 1
+    iterationen_var.set('Suchvorgänge: ' + str(iterationen))
+
+def update_gefunden(*args):
+    gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
+
+def remove_all_traces():
+    r1_var.trace_remove("write", r1_var.trace_id)
+    r2_var.trace_remove("write", r2_var.trace_id)
+    r3_var.trace_remove("write", r3_var.trace_id)
+    r4_var.trace_remove("write", r4_var.trace_id)
+    r5_var.trace_remove("write", r5_var.trace_id)
+    f1_var.trace_remove("write", f1_var.trace_id)
+    f2_var.trace_remove("write", f2_var.trace_id)
+    f3_var.trace_remove("write", f3_var.trace_id)
+    f4_var.trace_remove("write", f4_var.trace_id)
+    f5_var.trace_remove("write", f5_var.trace_id)
+    nt_var.trace_remove("write", nt_var.trace_id)
+
+def add_all_traces():
+    r1_var.trace_id = r1_var.trace_add("write", suchen)
+    r2_var.trace_id = r2_var.trace_add("write", suchen)
+    r3_var.trace_id = r3_var.trace_add("write", suchen)
+    r4_var.trace_id = r4_var.trace_add("write", suchen)
+    r5_var.trace_id = r5_var.trace_add("write", suchen)
+    f1_var.trace_id = f1_var.trace_add("write", suchen)
+    f2_var.trace_id = f2_var.trace_add("write", suchen)
+    f3_var.trace_id = f3_var.trace_add("write", suchen)
+    f4_var.trace_id = f4_var.trace_add("write", suchen)
+    f5_var.trace_id = f5_var.trace_add("write", suchen)
+    nt_var.trace_id = nt_var.trace_add("write", suchen)
 
 def reset_form():
-    richtig_1_var.set('')
-    richtig_2_var.set('')
-    richtig_3_var.set('')
-    richtig_4_var.set('')
-    richtig_5_var.set('')
-    falsch_1_var.set('')
-    falsch_2_var.set('')
-    falsch_3_var.set('')
-    falsch_4_var.set('')
-    falsch_5_var.set('')
-    ausgeschlossen.set('')
-    needed_var.set('')
+    global iterationen
+    iterationen = 0
+    remove_all_traces()
+    r1_var.set('')
+    r2_var.set('')
+    r3_var.set('')
+    r4_var.set('')
+    r5_var.set('')
+    f1_var.set('')
+    f2_var.set('')
+    f3_var.set('')
+    f4_var.set('')
+    f5_var.set('')
+    nt_var.set('')
+    iterationen_var.set('Suchvorgänge: ' + str(iterationen))
+    passende_woerter = [start_wort]
+    vorschlaege_var.set(passende_woerter)
+    gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
+    add_all_traces()
 
+# such_btt = ttk.Button(mainframe, text="Suchen", command=suchen).grid(column=2, row=7, sticky=E)
+laden_btt = ttk.Button(mainframe, text="Laden", command=laden_btt_click)
+laden_btt.grid(column=0, row=7, sticky=W)
+erneut_btt = ttk.Button(mainframe, text="Erneut", command=reset_form)
+erneut_btt.grid(column=1, row=7, sticky=E)
 
-such_btt = ttk.Button(mainframe, text="Suchen", command=calculate).grid(column=2, row=6, sticky=E)
-laden_btt = ttk.Button(mainframe, text="Laden", command=load_file).grid(column=1, row=6, sticky=E)
-erneut_btt = ttk.Button(mainframe, text="Erneut", command=reset_form).grid(column=0, row=6, sticky=W)
-
-richtig_1_var.trace_add("write", calculate)
-richtig_2_var.trace_add("write", calculate)
-richtig_3_var.trace_add("write", calculate)
-richtig_4_var.trace_add("write", calculate)
-richtig_5_var.trace_add("write", calculate)
-
-falsch_1_var.trace_add("write", calculate)
-falsch_2_var.trace_add("write", calculate)
-falsch_3_var.trace_add("write", calculate)
-falsch_4_var.trace_add("write", calculate)
-falsch_5_var.trace_add("write", calculate)
-
-ausgeschlossen.trace_add("write", calculate)
-
-
+add_all_traces()
+vorschlaege_var.trace_id = vorschlaege_var.trace_add("write", update_gefunden)
 
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=5)
-for child in richtigframe.winfo_children(): 
+for child in rf_frame.winfo_children(): 
     child.grid_configure(padx=1,pady=5)
 
-root.bind("<Return>", calculate)
+root.bind("<Return>", suchen)
 
 root.mainloop()
