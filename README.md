@@ -3,7 +3,9 @@ Jedes Wordle besteht aus einem Wort mit 5 Buchstaben. Dazu hat man in der Regel 
 Der Wordle-Solver hilft dabei das gesuchte Wort zu finden, indem er anhand der Suchkriterien eine Liste mit passenden Wörtern vorschlägt.
 
 ## Installation
-
+1. Portable App aus den [Releases](https://github.com/marcbeat/wordle-solver/releases) herunterladen
+2. `.zip` entpacken
+3. App starten
 
 ## Benutzung
 ### Grafische Oberfläche
