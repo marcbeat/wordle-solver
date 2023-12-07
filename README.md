@@ -27,3 +27,20 @@ Das bedeutet:
 Zunächst wird immer das Wort "Adieu" angezeigt. Durch die vielen enthaltenen Vokale ist dies ein ideales Startwort ins Wordle.
 
 Danach können nach und nach die ausgeschlossenen und richtigen Buchstaben eingetragen werden. Die Liste mit Vorschlägen für passende Wörter wird immer weiter eingeschränkt.
+
+## Entwicklung
+Zur Entwicklung werden keine externen Pakete benötigt.
+
+## Building
+Zum Builden und Packagen der App wurde [PyInstaller](https://pyinstaller.org/en/stable/index.html) verwendet.
+Dazu zunächst PyInstaller zum Repo hinzufügen:
+```shell
+pip install -U pyinstaller
+```
+
+Anschließend die ausführbaren Dateien erstellen:
+```shell
+pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile
+```
+
+**Nicht vergessen**: Im selben Verzeichnis wie die ausführbare Datei muss die Wörterbuch-Datei `dict.json` liegen.
