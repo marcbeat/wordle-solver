@@ -100,6 +100,7 @@ def wort_wert(wort):
     # Berechne gewichteten Wert anhand Buchstaben in einem Wort
     vokale = ['a', 'e', 'i', 'o', 'u']
     vokal_gewicht = 2
+    # wdh_gewicht = 0.2
     buchstaben_stat = { # Prozentualer anteil
         'e': 0.1740,
         'n': 0.978,
@@ -131,11 +132,13 @@ def wort_wert(wort):
     }
 
     wert = 0.00
+    buchstaben_anzahl = {}
     for buchstabe in wort:
+        buchstaben_anzahl[buchstabe] = buchstaben_anzahl[buchstabe] + 1 if buchstabe in buchstaben_anzahl else 1
         gewichtung = 1
         if buchstabe in vokale:
             gewichtung = vokal_gewicht
-        wert += (buchstaben_stat[buchstabe] * gewichtung)
+        wert += (buchstaben_stat[buchstabe] * gewichtung / buchstaben_anzahl[buchstabe])
     return wert
 
 
