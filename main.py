@@ -11,6 +11,8 @@ mainframe.grid(column=0, row=2, sticky=(N, W, E, S))
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 root.resizable(False, False)
+icon_pfad = path.abspath(path.join(path.dirname(__file__), 'icon.png'))
+root.iconphoto(True, PhotoImage(file=icon_pfad))
 
 rf_frame = ttk.Frame(mainframe)
 rf_frame.grid(column=1, row=0, rowspan=2, columnspan=2, sticky=(N, W, E, S))
