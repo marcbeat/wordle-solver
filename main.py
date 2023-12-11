@@ -175,15 +175,20 @@ def filtern(woerter):
     # Falsch positionierte Buchstaben filtern
     if len(f1) > 0:
         gefiltert = [wort for wort in gefiltert if wort[0] not in f1.lower()]
+        gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f1.lower())]
     if len(f2) > 0:
         gefiltert = [wort for wort in gefiltert if wort[1] not in f2.lower()]
+        gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f2.lower())]
     if len(f3) > 0:
         gefiltert = [wort for wort in gefiltert if wort[2] not in f3.lower()]
+        gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f3.lower())]
     if len(f4) > 0:
         gefiltert = [wort for wort in gefiltert if wort[3] not in f4.lower()]
+        gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f4.lower())]
     if len(f5) > 0:
         gefiltert = [wort for wort in gefiltert if wort[4] not in f5.lower()]
-    
+        gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f5.lower())]    
+
     gefiltert.sort(key=wort_wert, reverse=True)
     return gefiltert
 
