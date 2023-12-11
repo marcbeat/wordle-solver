@@ -158,9 +158,6 @@ def filtern(woerter):
     ## Buchstaben ausgeschlossen
     nt = nt_var.get()
 
-    # Ausgeschlossene Buchstaben filtern
-    if len(nt) > 0:
-        gefiltert = [wort for wort in gefiltert if not any(buchstabe in nt for buchstabe in wort)]
     # Richtig positionierte Buchstaben filtern
     if len(r1) > 0:
         gefiltert = [wort for wort in gefiltert if wort[0] == r1.lower()]
@@ -188,6 +185,35 @@ def filtern(woerter):
     if len(f5) > 0:
         gefiltert = [wort for wort in gefiltert if wort[4] not in f5.lower()]
         gefiltert = [wort for wort in gefiltert if all(buchstabe in wort for buchstabe in f5.lower())]    
+
+    # Ausgeschlossene Buchstaben filtern
+    if len(nt) > 0:
+        gefiltert_temp = []
+        for wort in gefiltert:
+            wort_gefiltert = wort
+            buchstabe_in_wort = False
+            for buchstabe in nt:
+                if buchstabe == r1.lower():
+                    wort_gefiltert = '_' + wort_gefiltert[1:]
+                if buchstabe == r2.lower():
+                    wort_gefiltert = wort_gefiltert[0] + '_' + wort_gefiltert[2:]
+                if buchstabe == r3.lower():
+                    wort_gefiltert = wort_gefiltert[:1] + '_' + wort_gefiltert[3:]
+                if buchstabe == r4.lower():
+                    wort_gefiltert = wort_gefiltert[:2] + '_' + wort_gefiltert[4]
+                if buchstabe == r4.lower():
+                    wort_gefiltert = wort_gefiltert[:3] + '_'
+                
+                wort_gefiltert.replace('_', '')
+
+                if buchstabe in wort_gefiltert:
+                    buchstabe_in_wort = True
+            
+            if not buchstabe_in_wort:
+                gefiltert_temp.append(wort)
+        
+        gefiltert = gefiltert_temp
+        # gefiltert = [wort for wort in gefiltert if not any(buchstabe in nt for buchstabe in wort)]
 
     gefiltert.sort(key=wort_wert, reverse=True)
     return gefiltert
