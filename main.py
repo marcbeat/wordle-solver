@@ -1,22 +1,24 @@
 import json
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk, messagebox
 from os import path
 
-root = Tk()
+root = tk.Tk()
 root.title("Wordle lösen")
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=2, sticky=(N, W, E, S))
+mainframe.grid(column=0, row=2, sticky='NESW')
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 root.resizable(False, False)
 icon_pfad = path.abspath(path.join(path.dirname(__file__), 'icon.png'))
-root.iconphoto(True, PhotoImage(file=icon_pfad))
+root.iconphoto(True, tk.PhotoImage(file=icon_pfad))
 
-rf_frame = ttk.Frame(mainframe)
-rf_frame.grid(column=1, row=0, rowspan=2, columnspan=2, sticky=(N, W, E, S))
+r_frame = ttk.Frame(mainframe)
+r_frame.grid(column=1, row=0, columnspan=2, sticky='NESW')
 
+f_frame = ttk.Frame(mainframe)
+f_frame.grid(column=1, row=1, columnspan=2, sticky='NESW')
 
 json_pfad = path.abspath(path.join(path.dirname(__file__), 'dict.json'))
 
@@ -37,68 +39,68 @@ start_wort = 'adieu'
 passende_woerter = [start_wort]
 
 r_lbl = ttk.Label(mainframe, text='Richtige Stelle:')
-r_lbl.grid(column=0, row=0, sticky=E)
-r1_var = StringVar()
-r2_var = StringVar()
-r3_var = StringVar()
-r4_var = StringVar()
-r5_var = StringVar()
-r1_entry = ttk.Entry(rf_frame, textvariable=r1_var, width=3)
-r1_entry.grid(column=0, row=0, sticky=W)
-r2_entry = ttk.Entry(rf_frame, textvariable=r2_var, width=3)
-r2_entry.grid(column=1, row=0, sticky=W)
-r3_entry = ttk.Entry(rf_frame, textvariable=r3_var, width=3)
-r3_entry.grid(column=2, row=0, sticky=W)
-r4_entry = ttk.Entry(rf_frame, textvariable=r4_var, width=3)
-r4_entry.grid(column=3, row=0, sticky=W)
-r5_entry = ttk.Entry(rf_frame, textvariable=r5_var, width=3)
-r5_entry.grid(column=4, row=0, sticky=W)
+r_lbl.grid(column=0, row=0, sticky='E')
+r1_var = tk.StringVar()
+r2_var = tk.StringVar()
+r3_var = tk.StringVar()
+r4_var = tk.StringVar()
+r5_var = tk.StringVar()
+r1_entry = ttk.Entry(r_frame, textvariable=r1_var, width=3)
+r1_entry.grid(column=0, row=0, sticky='W')
+r2_entry = ttk.Entry(r_frame, textvariable=r2_var, width=3)
+r2_entry.grid(column=1, row=0, sticky='W')
+r3_entry = ttk.Entry(r_frame, textvariable=r3_var, width=3)
+r3_entry.grid(column=2, row=0, sticky='W')
+r4_entry = ttk.Entry(r_frame, textvariable=r4_var, width=3)
+r4_entry.grid(column=3, row=0, sticky='W')
+r5_entry = ttk.Entry(r_frame, textvariable=r5_var, width=3)
+r5_entry.grid(column=4, row=0, sticky='W')
 
 f_lbl = ttk.Label(mainframe, text='Falsche Stelle:')
-f_lbl.grid(column=0, row=1, sticky=E)
-f1_var = StringVar()
-f2_var = StringVar()
-f3_var = StringVar()
-f4_var = StringVar()
-f5_var = StringVar()
-f1_entry = ttk.Entry(rf_frame, textvariable=f1_var, width=3)
-f1_entry.grid(column=0, row=1, sticky=W)
-f2_entry = ttk.Entry(rf_frame, textvariable=f2_var, width=3)
-f2_entry.grid(column=1, row=1, sticky=W)
-f3_entry = ttk.Entry(rf_frame, textvariable=f3_var, width=3)
-f3_entry.grid(column=2, row=1, sticky=W)
-f4_entry = ttk.Entry(rf_frame, textvariable=f4_var, width=3)
-f4_entry.grid(column=3, row=1, sticky=W)
-f5_entry = ttk.Entry(rf_frame, textvariable=f5_var, width=3)
-f5_entry.grid(column=4, row=1, sticky=W)
+f_lbl.grid(column=0, row=1, sticky='E')
+f1_var = tk.StringVar()
+f2_var = tk.StringVar()
+f3_var = tk.StringVar()
+f4_var = tk.StringVar()
+f5_var = tk.StringVar()
+f1_entry = ttk.Entry(f_frame, textvariable=f1_var, width=3)
+f1_entry.grid(column=0, row=1, sticky='W')
+f2_entry = ttk.Entry(f_frame, textvariable=f2_var, width=3)
+f2_entry.grid(column=1, row=1, sticky='W')
+f3_entry = ttk.Entry(f_frame, textvariable=f3_var, width=3)
+f3_entry.grid(column=2, row=1, sticky='W')
+f4_entry = ttk.Entry(f_frame, textvariable=f4_var, width=3)
+f4_entry.grid(column=3, row=1, sticky='W')
+f5_entry = ttk.Entry(f_frame, textvariable=f5_var, width=3)
+f5_entry.grid(column=4, row=1, sticky='W')
 
-nt_lbl = ttk.Label(mainframe, text='Ausgeschlossen:').grid(column=0, row=2, sticky=E)
-nt_var = StringVar()
+nt_lbl = ttk.Label(mainframe, text='Ausgeschlossen:').grid(column=0, row=2, sticky='E')
+nt_var = tk.StringVar()
 nt_entry = ttk.Entry(mainframe, textvariable=nt_var)
-nt_entry.grid(column=1, row=2, sticky=W)
+nt_entry.grid(column=1, row=2, sticky='W')
 
-vorschlaege_lbl = ttk.Label(mainframe, text='Vorschläge:').grid(column=0, row=5, sticky=NE)
-vorschlaege_var = StringVar()
+vorschlaege_lbl = ttk.Label(mainframe, text='Vorschläge:').grid(column=0, row=5, sticky='NE')
+vorschlaege_var = tk.StringVar()
 vorschlaege_var.set([start_wort])
-vorschlaege_lstbx = Listbox(mainframe, height=10, listvariable=vorschlaege_var)
-vorschlaege_lstbx.grid(column=1, row=5, sticky=W)
+vorschlaege_lstbx = tk.Listbox(mainframe, height=10, listvariable=vorschlaege_var)
+vorschlaege_lstbx.grid(column=1, row=5, sticky='WE')
 
-gefunden_var = StringVar()
+gefunden_var = tk.StringVar()
 gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
 gefunden_lbl = ttk.Label(mainframe, textvariable=gefunden_var)
-gefunden_lbl.grid(column=1, row=6, sticky=NW)
+gefunden_lbl.grid(column=1, row=6, sticky='NW')
 
 woerter_anzahl = 0
-woerter_anzahl_var = StringVar()
+woerter_anzahl_var = tk.StringVar()
 woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
 anzahl_lbl = ttk.Label(mainframe, textvariable=woerter_anzahl_var)
-anzahl_lbl.grid(column=0, row=8, sticky=W)
+anzahl_lbl.grid(column=0, row=8, sticky='W')
 
 iterationen = 0
-iterationen_var = StringVar()
+iterationen_var = tk.StringVar()
 iterationen_var.set('Suchvorgänge: ' + str(iterationen))
 iterationen_lbl = ttk.Label(mainframe, textvariable=iterationen_var)
-iterationen_lbl.grid(column=1, row=8, sticky=E)
+iterationen_lbl.grid(column=1, row=8, sticky='E')
 
 
 def wort_wert(wort):
@@ -293,15 +295,15 @@ def reset_form():
     add_all_traces()
 
 erneut_btt = ttk.Button(mainframe, text="Erneut", command=reset_form)
-erneut_btt.grid(column=1, row=7, sticky=E)
+erneut_btt.grid(column=1, row=7, sticky='E')
 
 add_all_traces()
 vorschlaege_var.trace_id = vorschlaege_var.trace_add("write", update_gefunden)
 
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=5)
-for child in rf_frame.winfo_children(): 
-    child.grid_configure(padx=1,pady=5)
+# for child in rf_frame.winfo_children(): 
+#     child.grid_configure(padx=0,pady=5)
 
 root.bind("<Return>", suchen)
 
