@@ -1,6 +1,7 @@
 import json
 from tkinter import *
 from tkinter import ttk, messagebox
+from os import path
 
 root = Tk()
 root.title("Wordle lösen")
@@ -14,7 +15,8 @@ root.resizable(False, False)
 rf_frame = ttk.Frame(mainframe)
 rf_frame.grid(column=1, row=0, rowspan=2, columnspan=2, sticky=(N, W, E, S))
 
-json_pfad = 'dict.json'
+
+json_pfad = path.abspath(path.join(path.dirname(__file__), 'dict.json'))
 
 wortliste = []
 
