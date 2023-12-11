@@ -43,11 +43,11 @@ pip install -U pyinstaller
 Anschließend die ausführbaren Dateien erstellen:
 **Windows**
 ```shell
-pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --icon=icon.ico
+pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --add-data=./icon.png:. --icon=icon.ico
 ```
 **macOS**
 ```shell
-pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --icon=icon.icns
+pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --add-data=./icon.png:. --icon=icon.icns
 ```
 
 
