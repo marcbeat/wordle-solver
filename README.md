@@ -1,6 +1,9 @@
 # Wordles lösen
+#### 🇺🇸🇬🇧 *Englisch und Deutsch* 🇩🇪🇦🇹🇨🇭
+
+
 Jedes Wordle besteht aus einem Wort mit 5 Buchstaben. Dazu hat man in der Regel 6 Versuche, dieses Wort zu erraten.
-Der Wordle-Solver hilft dabei das gesuchte Wort zu finden, indem er anhand der Suchkriterien eine Liste mit passenden Wörtern vorschlägt.
+Der Wordle-Solver hilft dabei das gesuchte Wort zu finden, indem er anhand der Suchkriterien eine Liste mit passenden Wörtern der ausgewählten Sprache vorschlägt.
 
 ## Installation
 1. Portable App aus den [Releases](https://github.com/marcbeat/wordle-solver/releases) herunterladen
@@ -43,11 +46,11 @@ pip install -U pyinstaller
 Anschließend die ausführbaren Dateien erstellen:
 **Windows**
 ```shell
-pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --add-data=./icon.png:. --icon=icon.ico
+pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict_de.json:. --add-data=./dict_en.json:. --add-data=./icon.png:. --icon=icon.ico
 ```
 **macOS**
 ```shell
-pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict.json:. --add-data=./icon.png:. --icon=icon.icns
+pyinstaller  main.py -n "Wordle Solver" --noconfirm -w --onefile --add-data=./dict_de.json:. --add-data=./dict_en.json:.  --add-data=./icon.png:. --icon=icon.icns
 ```
 
 
