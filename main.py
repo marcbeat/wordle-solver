@@ -20,21 +20,6 @@ r_frame.grid(column=1, row=0, columnspan=2, sticky='NESW')
 f_frame = ttk.Frame(mainframe)
 f_frame.grid(column=1, row=1, columnspan=2, sticky='NESW')
 
-json_pfad = path.abspath(path.join(path.dirname(__file__), 'dict.json'))
-
-wortliste = []
-
-def load_file():
-    global laden_btt
-    global such_btt
-    global wortliste
-    with open(json_pfad, 'r', encoding='utf-8') as file:
-        # Initialize an empty list to store filtered data
-        wortliste = json.load(file)
-    woerter_anzahl = len(wortliste)
-    woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
-    # messagebox.showinfo("Wörterbuch geladen", str(len(wortliste)) + " Wörter wurden geladen.")
-
 start_wort = 'adieu'
 passende_woerter = [start_wort]
 
@@ -90,6 +75,13 @@ gefunden_var.set('Gefunden: ' + str(len(passende_woerter)))
 gefunden_lbl = ttk.Label(mainframe, textvariable=gefunden_var)
 gefunden_lbl.grid(column=1, row=6, sticky='NW')
 
+sprache_var = tk.StringVar()
+sprache_var.set(0)
+sprache_de = ttk.Radiobutton(mainframe, text="Deutsch", variable=sprache_var, value=0)
+sprache_de.grid(column=0, row=7, sticky='E')
+sprache_en = ttk.Radiobutton(mainframe, text="Englisch", variable=sprache_var, value=1)
+sprache_en.grid(column=1, row=7, sticky='W')
+
 woerter_anzahl = 0
 woerter_anzahl_var = tk.StringVar()
 woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
@@ -102,6 +94,15 @@ iterationen_var.set('Suchvorgänge: ' + str(iterationen))
 iterationen_lbl = ttk.Label(mainframe, textvariable=iterationen_var)
 iterationen_lbl.grid(column=1, row=8, sticky='E')
 
+aktuelle_sprache = int(sprache_var.get())
+def update_sprache(*args):
+    global aktuelle_sprache
+    global iterationen
+    if int(sprache_var.get()) != aktuelle_sprache:
+        aktuelle_sprache = int(sprache_var.get())
+        load_file()
+        iterationen = 0
+        suchen()
 
 def wort_wert(wort):
     # Berechne gewichteten Wert anhand Buchstaben in einem Wort
@@ -228,6 +229,25 @@ def filtern(woerter):
     gefiltert.sort(key=wort_wert, reverse=True)
     return gefiltert
 
+json_pfad_de = path.abspath(path.join(path.dirname(__file__), 'dict_de.json'))
+json_pfad_en = path.abspath(path.join(path.dirname(__file__), 'dict_en.json'))
+
+wortliste = []
+
+def load_file():
+    print("Lade Wörterbuch...")
+    global aktuelle_sprache
+    global laden_btt
+    global such_btt
+    global wortliste
+    dateipfad = json_pfad_de if aktuelle_sprache == 0 else json_pfad_en
+    with open(dateipfad, 'r', encoding='utf-8') as file:
+        # Initialize an empty list to store filtered data
+        wortliste = json.load(file)
+    woerter_anzahl = len(wortliste)
+    woerter_anzahl_var.set('Wörter geladen: ' + str(woerter_anzahl))
+    # messagebox.showinfo("Wörterbuch geladen", str(len(wortliste)) + " Wörter wurden geladen.")
+
 def suchen(*args):
     global iterationen
     global start_wort
@@ -259,6 +279,7 @@ def remove_all_traces():
     f4_var.trace_remove("write", f4_var.trace_id)
     f5_var.trace_remove("write", f5_var.trace_id)
     nt_var.trace_remove("write", nt_var.trace_id)
+    sprache_var.trace_remove("write", sprache_var.trace_id)
 
 def add_all_traces():
     r1_var.trace_id = r1_var.trace_add("write", suchen)
@@ -272,6 +293,7 @@ def add_all_traces():
     f4_var.trace_id = f4_var.trace_add("write", suchen)
     f5_var.trace_id = f5_var.trace_add("write", suchen)
     nt_var.trace_id = nt_var.trace_add("write", suchen)
+    sprache_var.trace_id = sprache_var.trace_add("write", update_sprache)
 
 def reset_form():
     global iterationen
@@ -302,8 +324,6 @@ vorschlaege_var.trace_id = vorschlaege_var.trace_add("write", update_gefunden)
 
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=5)
-# for child in rf_frame.winfo_children(): 
-#     child.grid_configure(padx=0,pady=5)
 
 root.bind("<Return>", suchen)
 
